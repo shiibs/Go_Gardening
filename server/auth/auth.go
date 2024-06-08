@@ -100,11 +100,26 @@ func GoogleCallbackHandler(c *fiber.Ctx) error {
         }
     }
 
-    returnObject["garden"] = gardens
-    returnObject["token"] = jwttoken
-    returnObject["user"] = user
-    returnObject["msg"] = "User authenticated"
-    return c.Status(fiber.StatusOK).JSON(returnObject)
+       // Create a map to hold user data
+       userData := map[string]interface{}{
+        "user":   user,
+        "token":  jwttoken,
+        "garden": gardens, // Assuming this is the garden data
+    }
+
+
+    loginData, err := json.Marshal(userData)
+    if err != nil {
+        log.Printf("Failed to serialize user data: %v\n", err)
+        return c.Status(fiber.StatusInternalServerError).SendString("Failed to serialize user data")
+    }
+   // Set a cookie with the serialized user data
+   c.Cookie(&fiber.Cookie{
+    Name:  "userData",
+    Value: string(loginData),   
+   })
+
+    return c.Redirect("http://localhost:5173", fiber.StatusTemporaryRedirect)
 }
 
 type UserInfoResponse struct {

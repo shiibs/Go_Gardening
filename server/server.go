@@ -37,21 +37,11 @@ func main() {
 
     app.Use(cors.New(cors.Config{
         AllowOrigins:"http://localhost:5173",
-        AllowHeaders: "Origin, Content-Type, Accept",
+        AllowHeaders: "Origin, Content-Type, Accept, Auth-token, token",
 		AllowCredentials: true,
     }))
 
     app.Use(logger.New())
-
-	// Use session middleware
-	app.Use(func(c *fiber.Ctx) error {
-       sess, err := database.Store.Get(c)
-       if err != nil {
-           return err
-       }
-       c.Locals("session", sess)
-       return c.Next()
-    })
 
     router.SetupRouters(app)
 

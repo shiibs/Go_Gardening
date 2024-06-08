@@ -5,22 +5,23 @@ import (
 	"github.com/shiibs/go-garden-planner/auth"
 )
 
-func Authenticate(c *fiber.Ctx) {
+func Authenticate(c *fiber.Ctx) error {
 	token := c.Get("token")
 
+	
 	if token == "" {
-		c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token not present."})
-	    return
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token not present."})
+	    
 	}
 
 	claims, msg := auth.ValidateToken(token)
 
 	if msg != "" {
-		c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": msg})
-		return 
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": msg})
+		 
 	}
 
 	c.Locals("email", claims.Email)
 
-	c.Next()
+	return c.Next()
 }
