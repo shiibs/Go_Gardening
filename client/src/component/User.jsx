@@ -22,15 +22,17 @@ export default function User({ user }) {
   };
   return (
     <div>
-      <button onClick={toggleDropDown} className="text-white">
-        {user.user.name}
-      </button>
+      {!isOpen && (
+        <button onClick={toggleDropDown} className="text-white">
+          {user.user.userName}
+        </button>
+      )}
 
       {isOpen && (
-        <div>
+        <div className="pt-8 pr-4">
           <button
             onClick={toggleDropDown}
-            className="absolute top-2 right-2 text-gray-500"
+            className="absolute top-2 right-2 text-gray-300"
           >
             {" "}
             {/* Position close button absolutely */}
@@ -38,12 +40,14 @@ export default function User({ user }) {
           </button>
           <h3>Gardens</h3>
           <ul>
-            {user.garden.length === 0 && <p>---</p>}
-            {user.garden.map((garden) => {
-              <Link to={`/garden_layout/${garden.id}`} key={garden.id}>
-                {garden.name}
-              </Link>;
-            })}
+            {user.user.gardens.length === 0 && <p>---</p>}
+            {user.user.gardens.map((garden) => (
+              <li key={garden.id}>
+                <Link to={`private/garden_layout/${garden.id}`}>
+                  {garden.name}
+                </Link>
+              </li>
+            ))}
           </ul>
           <button onClick={handleLogout}>Logout</button>
         </div>

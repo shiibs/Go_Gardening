@@ -3,10 +3,12 @@ import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import GardenLayout from "./component/GardenLayout";
 import HomePage from "./component/HomePage";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "./services/store/reducers/AuthSlice";
+import GardenPage from "./component/GardenPage";
 
 function App() {
+  const { loggedIn, user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,7 +27,7 @@ function App() {
       // Parse the user data cookie
       const userData = JSON.parse(userDataCookie);
       localStorage.setItem("token", userData.token);
-      console.log(userData);
+      console.log(userData.user);
       // Dispatch action to update Redux store with user data
       dispatch(setUser(userData));
     }
@@ -37,11 +39,14 @@ function App() {
         path="/"
         element={
           <div>
-            <HomePage />
+            <HomePage loggedIn={loggedIn} user={user} />
           </div>
         }
       />
-      <Route path="/garden_layout/:id" element={<GardenLayout />} />
+      <Route
+        path="private/garden_layout/:id"
+        element={<GardenPage loggedIn={loggedIn} user={user} />}
+      />
     </Routes>
   );
 }

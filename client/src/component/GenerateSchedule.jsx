@@ -41,7 +41,7 @@ export default function GenerateSchedule({
 
       if (response.status === 201) {
         console.log("before");
-        const id = response?.data.email;
+        const id = response?.data.gardenId;
         console.log(response);
         navigate(`/garden_layout/${id}`);
       }

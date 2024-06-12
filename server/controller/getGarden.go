@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -32,19 +33,24 @@ func GetGardenLayoutWithID(c *fiber.Ctx) error {
 		returnObject["msg"] = "User not found."
 		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
 	}
+	fmt.Println("email", user.Email)
 
 	// Initialize the garden layout model
 	var gardenLayout model.GardenLayout
 
 	// Query the database to find the garden by ID and preload its schedules and user
-	result := database.DBConn.Preload("GardeningSchedule").Preload("User").First(&gardenLayout, gardenID)
+	result := database.DBConn.First(&gardenLayout, gardenID)
 	if result.Error != nil {
 		if result.Error == gorm.ErrRecordNotFound {
+			fmt.Println("garden not found", result.Error)
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"statusText": "Error",
 				"message":    "Garden not found",
 			})
 		}
+
+		fmt.Println("Error retrieving data", result.Error)
+		
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"statusText": "Error",
 			"message":    "Error retrieving garden",
@@ -53,6 +59,7 @@ func GetGardenLayoutWithID(c *fiber.Ctx) error {
 
 	// Check if the garden belongs to the authenticated user
 	if gardenLayout.UserID != user.ID {
+		fmt.Println("UserId mismatch", gardenLayout.UserID)
 		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 			"statusText": "Error",
 			"message":    "You are not authorized to access this garden",

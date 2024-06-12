@@ -1,7 +1,6 @@
 package model
 
 import (
-	"encoding/json"
 	"time"
 
 	"gorm.io/gorm"
@@ -38,61 +37,39 @@ type User struct {
     GoogleID string         `json:"googleId" gorm:"unique;not null;index:idx_google_id"`
     UserName string         `json:"name" gorm:"not null"`
     Email    string         `json:"email" gorm:"unique;not null;index:idx_email"`
-    Gardens  []GardenLayout `json:"gardens"`
 }
-
 
 
 
 type GardenLayout struct {
-	gorm.Model
-	ID               uint       `json:"id" gorm:"primaryKey"`
-	Name             string     `json:"name" gorm:"not null"`
-	UserID           uint       `json:"userId" gorm:"not null"`
-	StartDate        time.Time  `json:"startDate" gorm:"not null"`
-	GardenLayout     Garden     `json:"gardenLayout" gorm:"type:jsonb;not null"`
-	CareDates DateSlice `json:"careDates" gorm:"type:jsonb"`
-	Schedules        []Schedule `json:"schedules" gorm:"foreignKey:GardenID"`
+    gorm.Model
+    ID           uint      `json:"id" gorm:"primaryKey"`
+    Name         string    `json:"name" gorm:"not null"`
+    UserID       uint      `json:"userId" gorm:"not null"`
+    StartDate    time.Time `json:"startDate" gorm:"not null"`
+    GardenLayout Garden `json:"gardenLayout" gorm:"type:jsonb;not null"`
+    CareDates    JSONBDates `json:"careDates" gorm:"type:jsonb"`
+    Schedules    []Schedule `json:"schedules" gorm:"foreignKey:GardenID"`
 }
-
-
 
 type Schedule struct {
-	gorm.Model
-	ID            uint          `json:"id" gorm:"primaryKey"`
-	PlantName          string        `json:"name" gorm:"not null"`
-	GardenID      uint          `json:"gardenId" gorm:"not null"`
-    PlantingDates DateSlice `json:"plantingDates" gorm:"type:jsonb"`
+    gorm.Model
+    ID            uint      `json:"id" gorm:"primaryKey"`
+    PlantName     string    `json:"name" gorm:"not null"`
+    GardenID      uint      `json:"gardenId" gorm:"not null"`
+    PlantingDates JSONBDates `json:"plantingDates" gorm:"type:jsonb"`
 }
 
-
-// Define a custom type for the slice of dates
-type DateSlice []time.Time
-
-// Define a method to convert DateSlice to JSONB
-func (ds DateSlice) ToJSONB() (interface{}, error) {
-    return json.Marshal(ds)
+type GardenDetails struct {
+    ID uint `json:"id"`
+    Name string `json:"name"`
 }
 
-// Define a method to scan JSONB into DateSlice
-func (ds *DateSlice) Scan(value interface{}) error {
-    // Check if value is nil
-    if value == nil {
-        *ds = []time.Time{}
-        return nil
-    }
-
-    // Convert the value to []byte
-    bytes, ok := value.([]byte)
-    if !ok {
-        return gorm.ErrInvalidData
-    }
-
-    // Unmarshal JSONB data into DateSlice
-    return json.Unmarshal(bytes, ds)
+type LoggedInUser struct {
+    ID uint `json:"userID"`
+    UserName string `json:"userName"`
+    Gardens []GardenDetails`json:"gardens"`
 }
-
-
 
 
 

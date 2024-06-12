@@ -91,20 +91,34 @@ func GoogleCallbackHandler(c *fiber.Ctx) error {
         return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
     }
 
-    // get garden details of the user if available
-    gardens := make([]map[string]interface{}, len(user.Gardens))
-    for i, garden := range user.Gardens {
-        gardens[i] = map[string]interface{}{
-            "id":   garden.ID,
-            "name": garden.Name,
-        }
+    var loggedInUser model.LoggedInUser
+
+    loggedInUser.ID = user.ID
+    loggedInUser.UserName= user.UserName
+
+    gardenLayout, err := GetAllGardenByUserID(loggedInUser.ID)
+
+    if err != nil {
+        log.Println("failed to get gardens:", err)
     }
 
-       // Create a map to hold user data
-       userData := map[string]interface{}{
-        "user":   user,
+    // get garden details of the user if available
+    gardens := make([]model.GardenDetails, len(gardenLayout))
+    for _, garden := range gardenLayout {
+        var data model.GardenDetails
+        data.ID = garden.ID
+        data.Name = garden.Name
+
+        gardens = append(gardens, data)
+    }
+
+    loggedInUser.Gardens = gardens
+    // Create a map to hold user data
+
+    fmt.Println(loggedInUser.Gardens)
+    userData := map[string]interface{}{
+        "user":   loggedInUser,
         "token":  jwttoken,
-        "garden": gardens, // Assuming this is the garden data
     }
 
 
@@ -155,43 +169,10 @@ func getUserInfo(token string) (*UserInfoResponse, error) {
     return userInfo, nil
 }
 
-// func GetUserHandler(c *fiber.Ctx) error {
+func GetAllGardenByUserID(userID uint) ([]model.GardenLayout, error){
+    var gardens []model.GardenLayout
 
-//     sess, err := database.Store.Get(c)
-//     if err != nil {
-//         log.Println("Error retrieving session:", err)
-//         return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-//             "statusText": "Error",
-//             "message":    "Session retrieval failed",
-//         })
-//     }
-//     defer sess.Save()
+    result := database.DBConn.Where("user_id = ?", userID).Find(&gardens)
 
-//     log.Println("Session in getUserHandler", sess)
-//     // Check if user is authenticated
-//     userID := sess.Get("userID")
-//     userEmail := sess.Get("userEmail")
-//     log.Println("userId and email in getUserHandler", userID, userEmail)
-  
-//     var user model.User
-//     result := database.DBConn.Preload("Gardens").First(&user, userID)
-//     if result.Error != nil {
-//         return c.Status(fiber.StatusInternalServerError).SendString("User not found")
-//     }
-
-//     // Prepare a response with garden IDs and names
-//     gardens := make([]map[string]interface{}, len(user.Gardens))
-//     for i, garden := range user.Gardens {
-//         gardens[i] = map[string]interface{}{
-//             "id":   garden.ID,
-//             "name": garden.Name,
-//         }
-//     }
-
-//     response := map[string]interface{}{
-//         "userName": user.UserName,
-//         "gardens":  gardens,
-//     }
-
-//     return c.JSON(response)
-// }
+    return gardens, result.Error
+}

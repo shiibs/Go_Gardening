@@ -25,20 +25,19 @@ func PostGardenPlanner(c *fiber.Ctx) error {
     }
     email := c.Locals("email")
 
-	if email == nil {
-		log.Println("Email not found")
-		context["msg"] = "Email not found."
-		return c.Status(fiber.StatusUnauthorized).JSON(context)
-	}
+    if email == nil {
+        log.Println("Email not found")
+        context["msg"] = "Email not found."
+        return c.Status(fiber.StatusUnauthorized).JSON(context)
+    }
 
-	var user model.User
+    var user model.User
 
-	if err := database.DBConn.Where("email = ?", email).First(&user).Error; err != nil {
-		log.Println("User not found.")
-		context["msg"] = "User not found."
-		return c.Status(fiber.StatusBadRequest).JSON(context)
-	}
-
+    if err := database.DBConn.Where("email = ?", email).First(&user).Error; err != nil {
+        log.Println("User not found.")
+        context["msg"] = "User not found."
+        return c.Status(fiber.StatusBadRequest).JSON(context)
+    }
 
     submittedForm := new(Form)
 
@@ -65,12 +64,13 @@ func PostGardenPlanner(c *fiber.Ctx) error {
     garden := ArrangePlants(submittedForm.AddedPlantList, rows, columns)
     monthlyCareDates := generateMonthlyCareDates(plantingDate, 12)
 
+   
     gardenLayout := model.GardenLayout{
         Name:         submittedForm.GardenName,
         StartDate:    plantingDate,
         GardenLayout: garden,
-        UserID:      user.ID,
-        CareDates:    monthlyCareDates,
+        UserID:       user.ID,
+        CareDates:  monthlyCareDates,
     }
 
     // Save garden layout to database
@@ -79,11 +79,12 @@ func PostGardenPlanner(c *fiber.Ctx) error {
         return respondWithError(c, fiber.StatusInternalServerError, "Error in saving data")
     }
 
-    // Generate and save replanting schedules
-    if err := saveReplantingSchedules(submittedForm.AddedPlantList, gardenLayout.ID, plantingDate); err != nil {
+      // Generate and save replanting schedules
+      if err := saveReplantingSchedules(submittedForm.AddedPlantList, gardenLayout.ID, plantingDate); err != nil {
         log.Println("Error in saving schedule:", err)
         return respondWithError(c, fiber.StatusInternalServerError, "Error in saving schedule")
     }
+
 
     // Send email notification
     if err := SendEmail(user.Email, gardenLayout); err != nil {
@@ -95,7 +96,6 @@ func PostGardenPlanner(c *fiber.Ctx) error {
     context["gardenId"] = gardenLayout.ID
     return c.Status(fiber.StatusCreated).JSON(context)
 }
-
 
 func respondWithError(c *fiber.Ctx, status int, message string) error {
     return c.Status(status).JSON(fiber.Map{
@@ -126,8 +126,8 @@ func saveReplantingSchedules(plants []model.Plant, gardenID uint, startDate time
         replantingDates := generateReplantingDates(plant, 12, startDate)
         for plantName, dates := range replantingDates {
             schedule := model.Schedule{
-                PlantName:    plantName,
-                GardenID:     gardenID,
+                PlantName:     plantName,
+                GardenID:      gardenID,
                 PlantingDates: dates,
             }
             if result := database.DBConn.Create(&schedule); result.Error != nil {
@@ -206,26 +206,30 @@ func ArrangePlants(plants []model.Plant, rows, cols int) model.Garden {
     return garden
 }
 
-func isAdjacentToEnemyPlant(garden model.Garden, row, col int, enemies []model.Enemy) bool {
-    for _, enemy := range enemies {
-        if enemy.EnemyID > 0 {
-            if row > 0 && garden[row-1][col].ID == enemy.EnemyID {
-                return true
-            }
-            if row < len(garden)-1 && garden[row+1][col].ID == enemy.EnemyID {
-                return true
-            }
-            if col > 0 && garden[row][col-1].ID == enemy.EnemyID {
-                return true
-            }
-            if col < len(garden[0])-1 && garden[row][col+1].ID == enemy.EnemyID {
+func isAdjacentToEnemyPlant(garden model.Garden, row, col int, enemyPlants []model.Enemy) bool {
+    adjacentPositions := [][2]int{
+        {row - 1, col},
+        {row + 1, col},
+        {row, col - 1},
+        {row, col + 1},
+    }
+
+    enemyPlantNames := make(map[uint]bool)
+    for _, enemy := range enemyPlants {
+        enemyPlantNames[enemy.EnemyID] = true
+    }
+
+    for _, pos := range adjacentPositions {
+        r, c := pos[0], pos[1]
+        if r >= 0 && r < len(garden) && c >= 0 && c < len(garden[r]) {
+            if enemyPlantNames[garden[r][c].ID] {
                 return true
             }
         }
     }
+
     return false
 }
-
 // func (g Garden) Print() {
 // 	for _, row := range g {
 // 		for _, plant := range row {

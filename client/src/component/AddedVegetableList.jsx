@@ -31,7 +31,7 @@ export default function AddedVegetableList({
   };
 
   return (
-    <div>
+    <div className="p-6">
       {addedPlantList.length > 0 && // Check if apiData is not empty
         addedPlantList.map((plant) => (
           <h4

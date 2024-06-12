@@ -78,9 +78,9 @@ export default function GardenPlanner({ loggedIn }) {
 
       {/* <Header isHomePage={false} /> */}
       <div className="bg-gray-50 py-4">
-        <h3 className="text-center text-2xl pb-2">Start now</h3>
+        <h3 className="text-center text-2xl pb-4 pt-3">Start now</h3>
         <div className=" flex gap-3 justify-center text-xl">
-          <label className="">Space in Square foot</label>
+          <label className="pr-2">Space in Square foot</label>
           <NumberDropdown
             identifier="rows"
             onSelectChange={handleSelectChangeRows}

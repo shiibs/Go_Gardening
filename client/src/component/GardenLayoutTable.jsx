@@ -1,4 +1,12 @@
 import React from "react";
+import {
+  TableContainer, // Make sure to import TableContainer
+  Table,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
+} from "@mui/material"; // Importing from @mui/material
 
 export default function GardenLayoutTable({ gardenLayout }) {
   const renderCell = (plant, colIndex) => (

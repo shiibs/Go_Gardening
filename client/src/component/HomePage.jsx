@@ -8,8 +8,7 @@ import Footer from "./Footer";
 import GardenPlanner from "./GardenPlanner";
 import { useSelector } from "react-redux";
 
-export default function HomePage() {
-  const { loggedIn, user } = useSelector((state) => state.auth);
+export default function HomePage({ loggedIn, user }) {
   return (
     <div>
       <Header isHomePage={true} loggedIn={loggedIn} user={user} />

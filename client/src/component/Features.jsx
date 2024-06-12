@@ -7,7 +7,7 @@ export default function Features() {
         Key Features
       </h2>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 px-10 gap-4">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 px-10 gap-5 mx-4 text-gray-500 pb-10">
         <div className="feature">
           <h3>Interactive garden planner</h3>
           <p>

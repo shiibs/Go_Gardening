@@ -16,6 +16,7 @@ export default function NumberDropdown({
         id={identifier}
         defaultValue={defaultValue}
         onChange={handleChange}
+        className="p-1"
       >
         {numbers.map((number) => (
           <option key={number} value={number}>

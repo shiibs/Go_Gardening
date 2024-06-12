@@ -1,8 +1,29 @@
 package model
 
-import "encoding/json"
+import (
+	"database/sql/driver"
+	"encoding/json"
+	"time"
+)
 
 type Garden [][]Plant
+func (j Garden) Value() (driver.Value, error) {
+    return json.Marshal(j)
+}
+
+func (j *Garden) Scan(src interface{}) error {
+    return json.Unmarshal(src.([]byte), j)
+}
+
+type JSONBDates []time.Time
+
+func (j JSONBDates) Value() (driver.Value, error) {
+    return json.Marshal(j)
+}
+
+func (j *JSONBDates) Scan(src interface{}) error {
+    return json.Unmarshal(src.([]byte), j)
+}
 
 func (g Garden) MarshalJSON() ([]byte, error) {
     return json.Marshal([][]Plant(g))
