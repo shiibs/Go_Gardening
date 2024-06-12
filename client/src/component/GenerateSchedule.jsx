@@ -43,7 +43,7 @@ export default function GenerateSchedule({
         console.log("before");
         const id = response?.data.gardenId;
         console.log(response);
-        navigate(`/garden_layout/${id}`);
+        navigate(`/private/garden_layout/${id}`);
       }
     } catch (error) {
       console.log(error.response);

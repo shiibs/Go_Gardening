@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	"log"
 	"net/http"
 
@@ -115,7 +116,6 @@ func GoogleCallbackHandler(c *fiber.Ctx) error {
     loggedInUser.Gardens = gardens
     // Create a map to hold user data
 
-    fmt.Println(loggedInUser.Gardens)
     userData := map[string]interface{}{
         "user":   loggedInUser,
         "token":  jwttoken,

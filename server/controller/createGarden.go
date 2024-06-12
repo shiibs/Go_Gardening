@@ -169,35 +169,45 @@ func ArrangePlants(plants []model.Plant, rows, cols int) model.Garden {
         return row == 0 || row == rows-1 || col == 0 || col == cols-1
     }
 
+    // First pass: Place plants that need to be on the outer edges
     for i := range plants {
         plant := &plants[i]
         if plant.PlantsPerSquare == 1 {
             for row := 0; row < rows; row++ {
                 for col := 0; col < cols; col++ {
                     if isOuter(row, col) && garden[row][col].ID == 0 {
-                        for plant.Count > 0 {
-                            garden[row][col] = *plant
-                            plant.Count--
+                        garden[row][col] = *plant
+                        plant.Count--
+                        if plant.Count == 0 {
+                            break
                         }
                     }
+                }
+                if plant.Count == 0 {
+                    break
                 }
             }
         }
     }
 
+    // Second pass: Place remaining plants in available spaces
     for i := range plants {
         plant := &plants[i]
-        if plant.PlantsPerSquare != 1 && plant.Count > 0 {
+        if plant.Count > 0 {
             for row := 0; row < rows; row++ {
                 for col := 0; col < cols; col++ {
                     if garden[row][col].ID == 0 && !isAdjacentToEnemyPlant(garden, row, col, plant.EnemyPlants) {
                         if row == 0 || !isAdjacentToEnemyPlant(garden, row-1, col, plant.EnemyPlants) {
-                            for plant.Count > 0 {
-                                garden[row][col] = *plant
-                                plant.Count--
+                            garden[row][col] = *plant
+                            plant.Count--
+                            if plant.Count == 0 {
+                                break
                             }
                         }
                     }
+                }
+                if plant.Count == 0 {
+                    break
                 }
             }
         }

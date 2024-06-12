@@ -24,7 +24,7 @@ func GenerateToken( user model.User) (string, error) {
 		user.Email,
 		user.ID,
 		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Local().Add(time.Hour * 24)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Local().Add(30 * 24 * time.Hour)),
 		},
 
 	}
