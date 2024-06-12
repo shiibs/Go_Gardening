@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"os"
 
 	"log"
 	"net/http"
@@ -23,8 +24,8 @@ var googleOauthConfig *oauth2.Config
 func InitOAuth() {
     googleOauthConfig = &oauth2.Config{
         RedirectURL:  "http://localhost:8001/auth/callback",
-        ClientID:     "572068711762-09vptss1fv1bquptr3sfjrbme9t4fk8l.apps.googleusercontent.com",
-        ClientSecret: "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",
+        ClientID:     os.Getenv("G_ClientID"),
+        ClientSecret: os.Getenv("G_ClientSecret"),
         Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
         Endpoint:     google.Endpoint,
     }
