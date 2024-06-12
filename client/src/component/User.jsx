@@ -1,11 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { logout } from "../services/store/reducers/AuthSlice";
+import axios from "axios";
 
-export default function User({ user }) {
+export default function User({ loggedIn, user }) {
   const [isOpen, setIsopen] = useState(false);
+  const [apiData, setApiData] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const url = "http://localhost:8001/private/get_gardens";
+        if (loggedIn) {
+          const response = await axios.get(url, {
+            headers: {
+              token: window.localStorage.getItem("token"),
+            },
+          });
+
+          if (response.status == 200) {
+            setApiData(response.data["gardens"]);
+          }
+        }
+      } catch (error) {
+        console.log("error", error.response);
+      }
+    };
+
+    fetchData();
+    return () => {};
+  }, []);
 
   const dispatch = useDispatch();
 
@@ -40,8 +65,8 @@ export default function User({ user }) {
           </button>
           <h3>Gardens</h3>
           <ul>
-            {user.user.gardens.length === 0 && <p>---</p>}
-            {user.user.gardens.map((garden) => (
+            {apiData.length === 0 && <p>---</p>}
+            {apiData.map((garden) => (
               <li key={garden.id}>
                 <Link to={`private/garden_layout/${garden.id}`}>
                   {garden.name}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import GardenLayoutTable from "./GardenLayoutTable";
+import DeleteGardenButton from "./DeleteGardenButton";
 
 export default function GardenLayout({ loggedIn, user }) {
   const params = useParams();
@@ -96,9 +97,12 @@ export default function GardenLayout({ loggedIn, user }) {
               only adds vibrant colors but also serves as an effective natural
               pest repellent.
             </p>
-            <p className="font-bold pb-6">
-              For replanting dates and other information refer to the email.
-            </p>
+            <div className="flex justify-between">
+              <p className="font-bold pb-6">
+                For replanting dates and other information refer to the email.
+              </p>
+              <DeleteGardenButton user={user} />
+            </div>
           </div>
         </>
       )}

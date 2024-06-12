@@ -43,25 +43,6 @@ func RefreshToken(c *fiber.Ctx) error {
     loggedInUser.ID = user.ID
     loggedInUser.UserName= user.UserName
 
-    gardenLayout, err := auth.GetAllGardenByUserID(loggedInUser.ID)
-
-    if err != nil {
-        log.Println("failed to get gardens:", err)
-    }
-
-    // get garden details of the user if available
-    gardens := make([]model.GardenDetails, len(gardenLayout))
-    for _, garden := range gardenLayout {
-        var data model.GardenDetails
-        data.ID = garden.ID
-        data.Name = garden.Name
-
-        gardens = append(gardens, data)
-    }
-
-    loggedInUser.Gardens = gardens
-   
-
 	returnObject["token"] = token
 	returnObject["user"] = loggedInUser
 

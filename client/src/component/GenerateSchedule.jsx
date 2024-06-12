@@ -6,6 +6,7 @@ import { useState } from "react";
 
 import axios from "axios";
 import Login from "./Login";
+import Spinner from "./Spinner";
 
 export default function GenerateSchedule({
   handleConfirm,
@@ -16,6 +17,7 @@ export default function GenerateSchedule({
 }) {
   const [startDate, setStartDate] = useState(new Date());
   const navigate = useNavigate(); // Get history object
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -24,8 +26,8 @@ export default function GenerateSchedule({
   } = useForm();
 
   const saveForm = async (formData, event) => {
-    console.log(window.localStorage.getItem("token"));
     try {
+      setLoading(true);
       const url = "http://localhost:8001/private/create_gardenLayout";
       const requestDate = {
         ...formData,
@@ -40,13 +42,15 @@ export default function GenerateSchedule({
       });
 
       if (response.status === 201) {
-        console.log("before");
         const id = response?.data.gardenId;
-        console.log(response);
+        setLoading(false);
         navigate(`/private/garden_layout/${id}`);
       }
     } catch (error) {
       console.log(error.response);
+      navigate("/", {
+        state: { type: "error", message: "Server error" },
+      });
     }
   };
 
@@ -106,6 +110,7 @@ export default function GenerateSchedule({
                   <p className="text-red-500">{errors.startDate.message}</p>
                 )}
               </div>
+              {loading && <Spinner />}
               <button
                 type="submit"
                 className="block mx-auto mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"

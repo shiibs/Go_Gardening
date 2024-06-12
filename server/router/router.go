@@ -24,5 +24,7 @@ func SetupRouters(app *fiber.App) {
 	private.Post("/create_gardenLayout",  controller.PostGardenPlanner)
 	private.Get("/garden_layout/:id",controller.GetGardenLayoutWithID)
 	private.Get("/refreshToken", controller.RefreshToken)
+	private.Delete("/delete_garden/:id", controller.DeleteGarden)
+	private.Get("/get_gardens", controller.GetAllGardenByUserID)
 }
 

@@ -97,24 +97,6 @@ func GoogleCallbackHandler(c *fiber.Ctx) error {
     loggedInUser.ID = user.ID
     loggedInUser.UserName= user.UserName
 
-    gardenLayout, err := GetAllGardenByUserID(loggedInUser.ID)
-
-    if err != nil {
-        log.Println("failed to get gardens:", err)
-    }
-
-    // get garden details of the user if available
-    gardens := make([]model.GardenDetails, len(gardenLayout))
-    for _, garden := range gardenLayout {
-        var data model.GardenDetails
-        data.ID = garden.ID
-        data.Name = garden.Name
-
-        gardens = append(gardens, data)
-    }
-
-    loggedInUser.Gardens = gardens
-    // Create a map to hold user data
 
     userData := map[string]interface{}{
         "user":   loggedInUser,
@@ -169,10 +151,3 @@ func getUserInfo(token string) (*UserInfoResponse, error) {
     return userInfo, nil
 }
 
-func GetAllGardenByUserID(userID uint) ([]model.GardenLayout, error){
-    var gardens []model.GardenLayout
-
-    result := database.DBConn.Where("user_id = ?", userID).Find(&gardens)
-
-    return gardens, result.Error
-}

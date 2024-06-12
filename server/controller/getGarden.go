@@ -33,7 +33,6 @@ func GetGardenLayoutWithID(c *fiber.Ctx) error {
 		returnObject["msg"] = "User not found."
 		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
 	}
-	fmt.Println("email", user.Email)
 
 	// Initialize the garden layout model
 	var gardenLayout model.GardenLayout

@@ -22,7 +22,11 @@ export default function Header({ isHomePage, loggedIn, user }) {
         </Link>
       </div>
       <div>
-        {loggedIn ? <User user={user} /> : <Login loggedIn={loggedIn} />}
+        {loggedIn ? (
+          <User loggedIn={loggedIn} user={user} />
+        ) : (
+          <Login loggedIn={loggedIn} />
+        )}
       </div>
     </div>
   );
