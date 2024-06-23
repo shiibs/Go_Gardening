@@ -8,12 +8,19 @@ import Footer from "./Footer";
 import GardenPlanner from "./GardenPlanner";
 import { useSelector } from "react-redux";
 
-export default function HomePage({ loggedIn, user }) {
+export default function HomePage({ userDetails, setUserDetails }) {
   return (
     <div>
-      <Header isHomePage={true} loggedIn={loggedIn} user={user} />
+      <Header
+        isHomePage={true}
+        userDetails={userDetails}
+        setUserDetails={setUserDetails}
+      />
       <Hero />
-      <GardenPlanner loggedIn={loggedIn} />
+      <GardenPlanner
+        userDetails={userDetails}
+        setUserDetails={setUserDetails}
+      />
       <Features />
       <Footer />
     </div>

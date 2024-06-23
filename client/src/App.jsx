@@ -1,37 +1,45 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import GardenLayout from "./component/GardenLayout";
 import HomePage from "./component/HomePage";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "./services/store/reducers/AuthSlice";
+
 import GardenPage from "./component/GardenPage";
+import axios from "axios";
 
 function App() {
-  const { loggedIn, user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const [userDetails, setUserDetails] = useState({
+    gardens: [],
+    userName: "",
+    loginStatus: false,
+  });
 
   useEffect(() => {
-    // Function to parse cookie string and return cookie value by name
-    const getCookie = (name) => {
-      const match = document.cookie.match(
-        new RegExp("(^| )" + name + "=([^;]+)")
-      );
-      if (match) return match[2];
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8001/private/get_user_data",
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (response.status === 200) {
+          const user = response.data.gardens;
+          console.log(user);
+          setUserDetails({
+            gardens: response.data["gardens"],
+            userName: response.data.userName,
+            loginStatus: true,
+          });
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
     };
-
-    // Retrieve user data cookie
-    const userDataCookie = getCookie("userData");
-
-    if (userDataCookie) {
-      // Parse the user data cookie
-      const userData = JSON.parse(userDataCookie);
-      localStorage.setItem("token", userData.token);
-      console.log(userData.user);
-      // Dispatch action to update Redux store with user data
-      dispatch(setUser(userData));
-    }
-  }, [dispatch]);
+    fetchData();
+  }, []);
 
   return (
     <Routes>
@@ -39,13 +47,21 @@ function App() {
         path="/"
         element={
           <div>
-            <HomePage loggedIn={loggedIn} user={user} />
+            <HomePage
+              userDetails={userDetails}
+              setUserDetails={setUserDetails}
+            />
           </div>
         }
       />
       <Route
         path="private/garden_layout/:id"
-        element={<GardenPage loggedIn={loggedIn} user={user} />}
+        element={
+          <GardenPage
+            userDetails={userDetails}
+            setUserDetails={setUserDetails}
+          />
+        }
       />
     </Routes>
   );

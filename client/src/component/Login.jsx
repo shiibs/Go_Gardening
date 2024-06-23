@@ -1,6 +1,6 @@
 import { FaGoogle } from "react-icons/fa";
 
-export default function Login(loggedIn) {
+export default function Login() {
   const handleLogin = () => {
     window.location.href = "http://localhost:8001/auth/login";
   };

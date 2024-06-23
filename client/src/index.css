@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --primary-dark: #5651e5;
-  --primary-light: #709dff;
+  --primary-dark: #51e58f88;
+  --primary-light: #70ff7754;
+  --second-dark: #2758f8c2;
+  --second-light: #a1b7d3;
 }
 
 @layer base {
@@ -13,6 +15,10 @@
   }
 
   .button {
+    @apply border bg-gradient-to-r from-[var(--second-dark)] to-[var(--second-light)] text-white rounded-md;
+  }
+
+  .button2 {
     @apply border bg-gradient-to-r from-[var(--primary-dark)] to-[var(--primary-light)] text-white rounded-md;
   }
   /* .feature {
@@ -27,5 +33,16 @@
   }
   body {
     @apply text-slate-800;
+  }
+  .garden_list {
+    @apply mt-[320px] bg-neutral-800 px-[30px] pt-[20px] text-center rounded-md;
+  }
+
+  .garden_list h3 {
+    @apply text-xl m-[5px];
+  }
+
+  .garden_list ul li {
+    @apply text-green-100 my-[1px];
   }
 }

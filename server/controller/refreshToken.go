@@ -31,6 +31,12 @@ func RefreshToken(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(returnObject)
 	}
 
+	gardenLayout, err := GetAllGarden(user.ID)
+
+	if err != nil {
+        log.Println("failed to get gardens:", err)
+    }
+	
 	token, err := auth.GenerateToken(user)
 
 	if err != nil {
@@ -38,13 +44,23 @@ func RefreshToken(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
 	}
 
-	var loggedInUser model.LoggedInUser
+	// get garden details of the user if available
+    gardens := make([]model.GardenDetails, len(gardenLayout))
 
-    loggedInUser.ID = user.ID
-    loggedInUser.UserName= user.UserName
+    for _, garden := range gardenLayout {
+        var data model.GardenDetails
+        data.ID = garden.ID
+        data.Name = garden.Name
+
+        gardens = append(gardens, data)
+    }
+
+   returnObject["userName"] = user.UserName
+   returnObject["gardens"] = gardens
+  
 
 	returnObject["token"] = token
-	returnObject["user"] = loggedInUser
+	
 
 	return c.Status(fiber.StatusOK).JSON(returnObject)
 }

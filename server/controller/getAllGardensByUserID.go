@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,7 +8,7 @@ import (
 	"github.com/shiibs/go-garden-planner/model"
 )
 
-func GetAllGardenByUserID(c *fiber.Ctx) error{
+func GetUserData(c *fiber.Ctx) error{
 	context := fiber.Map{
 		"status": "OK",
 		"msg": "All gardens route",
@@ -17,7 +16,7 @@ func GetAllGardenByUserID(c *fiber.Ctx) error{
 
 	
 	email := c.Locals("email")
-	fmt.Println("getting all gardenData", email)
+	
 
 	if email == nil {
 		log.Println("Email not found")
@@ -51,7 +50,7 @@ func GetAllGardenByUserID(c *fiber.Ctx) error{
         gardens = append(gardens, data)
     }
 
-
+   context["userName"] = user.UserName
    context["gardens"] = gardens
    c.Status(200)
    return c.JSON(context)

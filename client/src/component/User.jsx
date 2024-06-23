@@ -1,45 +1,33 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AiOutlineClose } from "react-icons/ai";
-import { useDispatch } from "react-redux";
-import { logout } from "../services/store/reducers/AuthSlice";
+
 import axios from "axios";
 
-export default function User({ loggedIn, user }) {
+export default function User({ userDetails, setUserDetails }) {
   const [isOpen, setIsopen] = useState(false);
-  const [apiData, setApiData] = useState([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const url = "http://localhost:8001/private/get_gardens";
-        if (loggedIn) {
-          const response = await axios.get(url, {
-            headers: {
-              token: window.localStorage.getItem("token"),
-            },
-          });
 
-          if (response.status == 200) {
-            setApiData(response.data["gardens"]);
-          }
-        }
-      } catch (error) {
-        console.log("error", error.response);
-      }
-    };
-
-    fetchData();
-    return () => {};
-  }, []);
-
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    // Remove token
-    window.localStorage.removeItem("token");
+    try {
+      const response = await axios.post("http://localhost:8001/logout");
 
-    // Remove user from redux store
-    dispatch(logout());
+      if (response.status === 200) {
+        setUserDetails({
+          gardens: [],
+          userName: "",
+          loginStatus: false,
+        });
+        navigate("/", {
+          state: { type: "success", message: "logged out" },
+        });
+      }
+    } catch (error) {
+      navigate("/", {
+        state: { type: "error", message: "Internal error" },
+      });
+    }
   };
 
   const toggleDropDown = () => {
@@ -49,24 +37,24 @@ export default function User({ loggedIn, user }) {
     <div>
       {!isOpen && (
         <button onClick={toggleDropDown} className="text-white">
-          {user.user.userName}
+          {userDetails.userName}
         </button>
       )}
 
       {isOpen && (
-        <div className="pt-8 pr-4">
+        <div className="garden_list">
           <button
             onClick={toggleDropDown}
-            className="absolute top-2 right-2 text-gray-300"
+            className="absolute top-6 right-6 text-gray-300"
           >
             {" "}
             {/* Position close button absolutely */}
             <AiOutlineClose size={20} />
           </button>
           <h3>Gardens</h3>
-          <ul>
-            {apiData.length === 0 && <p>---</p>}
-            {apiData.map((garden) => (
+          <ul className="my-2">
+            {userDetails.gardens.length === 0 && <p>---</p>}
+            {userDetails.gardens.map((garden) => (
               <li key={garden.id}>
                 <Link to={`private/garden_layout/${garden.id}`}>
                   {garden.name}
@@ -74,7 +62,9 @@ export default function User({ loggedIn, user }) {
               </li>
             ))}
           </ul>
-          <button onClick={handleLogout}>Logout</button>
+          <button onClick={handleLogout} className="button2 m-3 px-3">
+            Logout
+          </button>
         </div>
       )}
     </div>

@@ -65,11 +65,6 @@ type GardenDetails struct {
     Name string `json:"name"`
 }
 
-type LoggedInUser struct {
-    ID uint `json:"userID"`
-    UserName string `json:"userName"`
-    Gardens []GardenDetails`json:"gardens"`
-}
 
 
 

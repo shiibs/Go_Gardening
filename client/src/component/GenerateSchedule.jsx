@@ -13,7 +13,7 @@ export default function GenerateSchedule({
   rows,
   columns,
   addedPlantList,
-  loggedIn,
+  userDetails,
 }) {
   const [startDate, setStartDate] = useState(new Date());
   const navigate = useNavigate(); // Get history object
@@ -56,7 +56,7 @@ export default function GenerateSchedule({
 
   return (
     <div>
-      {loggedIn ? (
+      {userDetails.loginStatus ? (
         <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-gray-900 bg-opacity-50 z-50">
           <div className="bg-white p-4 rounded-md shadow-md max-w-3xl relative">
             {" "}

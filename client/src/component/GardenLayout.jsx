@@ -4,7 +4,7 @@ import axios from "axios";
 import GardenLayoutTable from "./GardenLayoutTable";
 import DeleteGardenButton from "./DeleteGardenButton";
 
-export default function GardenLayout({ loggedIn, user }) {
+export default function GardenLayout() {
   const params = useParams();
   const [garden, setGarden] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,12 +20,9 @@ export default function GardenLayout({ loggedIn, user }) {
       try {
         const url = "http://localhost:8001/private/garden_layout/" + params.id;
         const response = await axios.get(url, {
-          headers: {
-            token: window.localStorage.getItem("token"),
-          },
+          withCredentials: true,
         });
         setGarden(response.data);
-        console.log(response.data);
       } catch (error) {
         setError(error);
       } finally {
@@ -101,7 +98,7 @@ export default function GardenLayout({ loggedIn, user }) {
               <p className="font-bold pb-6">
                 For replanting dates and other information refer to the email.
               </p>
-              <DeleteGardenButton user={user} />
+              <DeleteGardenButton />
             </div>
           </div>
         </>

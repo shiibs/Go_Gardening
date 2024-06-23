@@ -1,20 +1,24 @@
 package middleware
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/shiibs/go-garden-planner/auth"
 )
 
 func Authenticate(c *fiber.Ctx) error {
-	token := c.Get("token")
+	cookie := c.Cookies("cookie")
 
 	
-	if token == "" {
+	
+	if cookie == "" {
+		log.Println("cookie not found")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token not present."})
-	    
 	}
 
-	claims, msg := auth.ValidateToken(token)
+	
+	claims, msg := auth.ValidateToken(cookie)
 
 	if msg != "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": msg})

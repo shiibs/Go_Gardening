@@ -60,5 +60,16 @@ func ValidateToken(clientToken string) (claims *CustomClaims, msg string) {
 		return
 	}
 
+	if !ok {
+        msg = "Error in claims or invalid token"
+        return
+    }
+
+	// Check if the token is expired
+    if claims.ExpiresAt != nil && claims.ExpiresAt.Before(time.Now()) {
+        msg = "Token is expired"
+        return
+    }
+
 	return claims, msg
 }

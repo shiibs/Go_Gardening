@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	"log"
 	"net/http"
@@ -92,28 +93,13 @@ func GoogleCallbackHandler(c *fiber.Ctx) error {
         returnObject["msg"] = "Token creation error."
         return c.Status(fiber.StatusUnauthorized).JSON(returnObject)
     }
-
-    var loggedInUser model.LoggedInUser
-
-    loggedInUser.ID = user.ID
-    loggedInUser.UserName= user.UserName
-
-
-    userData := map[string]interface{}{
-        "user":   loggedInUser,
-        "token":  jwttoken,
-    }
-
-
-    loginData, err := json.Marshal(userData)
-    if err != nil {
-        log.Printf("Failed to serialize user data: %v\n", err)
-        return c.Status(fiber.StatusInternalServerError).SendString("Failed to serialize user data")
-    }
+    
    // Set a cookie with the serialized user data
    c.Cookie(&fiber.Cookie{
-    Name:  "userData",
-    Value: string(loginData),   
+    Name:  "cookie",
+    Value: jwttoken,   
+    HTTPOnly: true,
+    Expires: time.Now().Local().Add(30 * 24 * time.Hour),
    })
 
     return c.Redirect("http://localhost:5173", fiber.StatusTemporaryRedirect)

@@ -9,7 +9,7 @@ import AddedVegetableList from "./AddedVegetableList";
 import Notification from "./Notification";
 import GenerateSchedule from "./GenerateSchedule";
 
-export default function GardenPlanner({ loggedIn }) {
+export default function GardenPlanner({ userDetails }) {
   const [rows, setRows] = useState(10);
   const [columns, setColumns] = useState(10);
   const [spaceUsed, setSpaceUsed] = useState(0);
@@ -123,7 +123,7 @@ export default function GardenPlanner({ loggedIn }) {
           rows={rows}
           columns={columns}
           addedPlantList={addedPlantList}
-          loggedIn={loggedIn}
+          userDetails={userDetails}
         />
       )}
     </div>

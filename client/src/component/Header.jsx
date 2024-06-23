@@ -8,7 +8,7 @@ import User from "./User";
 
 import Login from "./Login";
 
-export default function Header({ isHomePage, loggedIn, user }) {
+export default function Header({ isHomePage, userDetails, setUserDetails }) {
   return (
     <div
       className={`flex w-full justify-between items-center h-20 px-4 z-10 text-white ${
@@ -22,34 +22,12 @@ export default function Header({ isHomePage, loggedIn, user }) {
         </Link>
       </div>
       <div>
-        {loggedIn ? (
-          <User loggedIn={loggedIn} user={user} />
+        {userDetails ? (
+          <User userDetails={userDetails} setUserDetails={setUserDetails} />
         ) : (
-          <Login loggedIn={loggedIn} />
+          <Login />
         )}
       </div>
     </div>
   );
-}
-
-{
-  /* <div className="md:hidden z-10" onClick={handleNav}>
-        {nav ? <AiOutlineClose size={20} /> : <HiOutlineMenuAlt4 size={20} />}
-      </div>
-
-      <div
-        onClick={handleNav}
-        className={
-          nav
-            ? "absolute text-black left-0 top-0 w-full bg-gray-100/90 px-4 py-7 flex-col"
-            : "absolute left-[-100%]"
-        }
-      >
-        <ul>
-          <h1>GO-GARDENING.</h1>
-          <li className="border-b">Home</li>
-          <li className="border-b">About</li>
-          <li className="border-b">Contact</li>
-        </ul>
-      </div> */
 }
