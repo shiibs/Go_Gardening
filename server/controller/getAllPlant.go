@@ -31,5 +31,6 @@ func GetPlantList(c *fiber.Ctx) error {
 	context["plant_list"] = plantList
 
 	
+	
 	return c.Status(200).JSON(context)
 }

@@ -9,7 +9,7 @@ import (
 
 
 func SetupRouters(app *fiber.App) {
-	app.Get("/", controller.GetPlantList)
+	app.Get("/get_plants", controller.GetPlantList)
 	app.Post("/add_plant", controller.CreatePlant)
 	app.Post("/add_relation", controller.CreateRelationShipHandler)
 	app.Get("/auth/login", auth.GoogleLoginHandler)
@@ -28,5 +28,7 @@ func SetupRouters(app *fiber.App) {
 	private.Get("/get_user_data", controller.GetUserData)
 	
 	private.Post("/logout", controller.Logout)
+
+	app.Static("/", "./dist")
 }
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -27,6 +28,7 @@ func init() {
 }
 
 func main() {
+    port := os.Getenv("PORT")
     psqlDB, err := database.DBConn.DB()
     if err != nil {
         panic("error in database connection")
@@ -43,8 +45,12 @@ func main() {
 
     app.Use(logger.New())
 
+
+
     router.SetupRouters(app)
 
-    app.Listen(":8001")
+   if err =  app.Listen(":"+port); err != nil {
+    log.Panic("error in listenin to port", err)
+   }
 }
 

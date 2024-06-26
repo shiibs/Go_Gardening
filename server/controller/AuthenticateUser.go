@@ -18,7 +18,7 @@ func IsAuthenticated(c *fiber.Ctx) error {
         })
     }
 
-    log.Println("session", sess)
+   
     defer sess.Save()
 
     // Check if user is authenticated

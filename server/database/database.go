@@ -23,13 +23,26 @@ func ConnectDB() {
     }
 
     log.Println("DB connected")
+    if err = db.AutoMigrate(new(model.Plant)); err != nil {
+        log.Println(err)
+    }
+    if err = db.AutoMigrate(new(model.Friend)); err != nil {
+     log.Println(err)
+    }
+    if err = db.AutoMigrate(new(model.Enemy)); err != nil {
+     log.Println(err)
+    }
+    if err = db.AutoMigrate(new(model.User)); err != nil {
+     log.Println(err)
+    }
+    if err = db.AutoMigrate(new(model.GardenLayout)); err != nil {
+     log.Println(err)
+    }
+    if err = db.AutoMigrate(new(model.Schedule)); err != nil {
+     log.Println(err)
+    }
 
-    db.AutoMigrate(new(model.Plant))
-    db.AutoMigrate(new(model.Friend))
-    db.AutoMigrate(new(model.Enemy))
-    db.AutoMigrate(new(model.User))
-    db.AutoMigrate(new(model.GardenLayout))
-    db.AutoMigrate(new(model.Schedule))
+  
 
    
     DBConn = db
