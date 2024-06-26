@@ -2,6 +2,7 @@ package database
 
 import (
 	"log"
+	"os"
 
 	"github.com/shiibs/go-garden-planner/model"
 	"gorm.io/driver/postgres"
@@ -12,7 +13,7 @@ import (
 var DBConn *gorm.DB
 
 func ConnectDB() {
-    dsn := "host=localhost user=postgres password=postgres dbname=garden_planner port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+    dsn := os.Getenv("DSN")
 
     db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
         Logger: logger.Default.LogMode(logger.Error),
