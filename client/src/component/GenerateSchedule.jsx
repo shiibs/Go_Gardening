@@ -36,9 +36,7 @@ export default function GenerateSchedule({
         addedPlantList: addedPlantList,
       };
       const response = await axios.post(url, requestDate, {
-        headers: {
-          token: window.localStorage.getItem("token"),
-        },
+        withCredentials: true,
       });
 
       if (response.status === 201) {

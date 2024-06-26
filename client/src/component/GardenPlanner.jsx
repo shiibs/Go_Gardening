@@ -22,7 +22,7 @@ export default function GardenPlanner({ userDetails }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:8001/");
+        const response = await axios.get("http://localhost:8001/get_plants");
 
         if (response.data) {
           // Check if response.data exists
